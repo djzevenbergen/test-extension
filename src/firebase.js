@@ -12,6 +12,7 @@ const firebaseConfig = {
 }
 
 firebase.initializeApp(firebaseConfig);
-firebase.firestore();
+
+firebase.firestore().enablePersistence()
 
 export default firebase;

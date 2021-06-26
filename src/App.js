@@ -1,3 +1,5 @@
+/*global chrome*/
+
 import logo from './logo.svg';
 import { useEffect, useState } from 'react';
 import './App.css';
@@ -12,10 +14,16 @@ function App() {
   const [thing, setThing] = useState()
   const [color, setColor] = useState('blue')
   const [chosenCop, setChosenCop] = useState();
+  const [chosenSection, setChosenSection] = useState()
+  const [sectionDropdown, setSectionDropdown] = useState(false);
 
   const doThing = async (cop) => {
     setChosenCop(cop)
-    cop = cop.toLowerCase()
+
+    chrome.storage.sync.set({'cop': cop}, function() {
+      console.log('Value is set to ' + cop);
+    });
+    // cop = cop.toLowerCase()
 
     var docRef = db.collection("cops").doc(cop);
     // setColor('red')
@@ -33,7 +41,8 @@ function App() {
       console.log({ thing })
       console.log('cop:::' + cop)
       console.log("doc:")
-      console.log(JSON.stringify(doc.data()))
+      // console.log(JSON.stringify(doc.data()))
+      console.log({doc})
       doc = doc.data()
       let list = {}
       Object.keys(doc).map((d) => {
@@ -55,6 +64,10 @@ function App() {
     });
   }
 
+  const doSectionThing = (e) =>{
+    setChosenSection(e)
+  } 
+
   const [visibleQuery, setVisibleQuery] = useState(null)
 
   const showQuery = (query) => {
@@ -64,15 +77,65 @@ function App() {
   const cops = ['CPM', 'Lambda']
 
   const goToUrl = (url) => {
-    window.chrome.tabs.query({ active: true, currentWindow: false }, function (tabs) {
-      window.chrome.tabs.update(tabs[0], { url: url });
+    chrome.tabs.query({ active: true, currentWindow: false }, function (tabs) {
+    chrome.tabs.update(tabs[0], { url: url });
     });
   }
 
+  const favoriteItem = (key, item) =>{
+
+        chrome.storage.sync.update({'favorites': {key: item}}, function() {
+      console.log('Value is set to ' + key);
+      console.log(item)
+    });
+
+  }
+
+
+useEffect(()=>{
+
+  const key = 'cop'
+  console.log("before first chrome thing")
+
+    console.log("before second chrome thing")
+  chrome.storage.sync.get([key], function(result) {
+      console.log("after second chrome thing")
+    console.log('Value currently is ' + result);
+    console.log({result})
+    // setChosenCop(result[key])
+    doThing(result[key])
+    console.log(chosenCop + "is the chosen cOP")
+  });
+
+
+}, [])
 
   useEffect(() => {
 
+
+
   }, [thing, visibleQuery])
+
+    useEffect(() => {
+
+
+
+  }, [sectionDropdown])
+
+  useEffect(()=>{
+    console.log("chosenCOP: " + chosenCop)
+    if (!chosenCop){
+      setSectionDropdown(false)
+    } else {
+      setSectionDropdown(true)
+    }
+  }, [chosenCop])
+
+  // const toggleClass = (key) =>{
+
+  // }
+
+
 
   return (
     <div className="App">
@@ -106,19 +169,49 @@ function App() {
           )
         })} */}
 
+              { sectionDropdown ? 
+        <select onChange={(e) => setChosenSection(e.target.value)} value={chosenSection} >
+
+          <option value={""}>Select a Topic</option>
+          {thing ? Object.keys(thing).map((x) => {
+            return (
+
+              <option value={x}
+              >
+                {x}
+              </option>
+            )
+          }) : ""}
+
+        </select>
+        : 
+        ""
+      }
+
+
+      <p>---------------------------------------------------------------------------------</p>
+{/* 
         <div>
           <p>{visibleQuery == null ? "" : visibleQuery}</p>
           {visibleQuery == null ? "" : <button onClick={() => showQuery(null)}>Close</button>}
-        </div>
+        </div> */}
+
+
 
         <ul>
           {/* <li>First</li> */}
-          {thing ? Object.keys(thing).map((item) => {
+          {chosenSection ? Object.keys(thing[chosenSection]).map((item) => {
             return (
               // <li key={thing[item]['url']}>{thing[item]['url']}</li>
               <div>
-                <a onClick={() => goToUrl(thing[item]['url'])}>{item}</a>
-                <button onClick={() => { showQuery(thing[item]['query']) }}>Show Query</button>
+{/*               
+                <div id={item} className="query">{thing[chosenSection][item]['query']}</div> */}
+
+                {visibleQuery == item ? <div><p>{thing[chosenSection][item]['query']}</p> <button onClick={() => setVisibleQuery(null)}>Close</button></div>: ""}
+                <a onClick={() => goToUrl(thing[chosenSection][item]['url'])}>{item}</a>
+                <button onClick={() => { showQuery(item) }}>Show Query</button>
+                <button onClick={() => { favoriteItem(item, thing[chosenSection][item]) }}>*Favorite*</button>
+                <p>__________________________________________________________________________________________</p>
               </div>)
 
           }) : ""}
