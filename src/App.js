@@ -1,5 +1,11 @@
 /*global chrome*/
 
+//todo
+
+// add the section to local.sync for persistent previous position
+// add favorites to local.sync ass object - https://stackoverflow.com/questions/15717334/chrome-sync-storage-to-store-and-update-array
+// pull from github and parse on client
+
 import logo from './logo.svg';
 import { useEffect, useState } from 'react';
 import './App.css';
@@ -84,7 +90,7 @@ function App() {
 
   const favoriteItem = (key, item) =>{
 
-        chrome.storage.sync.update({'favorites': {key: item}}, function() {
+        chrome.storage.sync.set({'favorites': {key: item}}, function() {
       console.log('Value is set to ' + key);
       console.log(item)
     });
