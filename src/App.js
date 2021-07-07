@@ -22,6 +22,8 @@ function App() {
   const [chosenCop, setChosenCop] = useState();
   const [chosenSection, setChosenSection] = useState()
   const [sectionDropdown, setSectionDropdown] = useState(false);
+  const [favoritesOpen ,setFavoritesOpen] = useState(false)
+  const [favorites, setFavorites] = useState({})
 
   const doThing = async (cop) => {
     setChosenCop(cop)
@@ -30,7 +32,7 @@ function App() {
       console.log('Value is set to ' + cop);
     });
     // cop = cop.toLowerCase()
-
+    if (cop != 'favorites') {
     var docRef = db.collection("cops").doc(cop);
     // setColor('red')
     // setThing(true)
@@ -62,12 +64,13 @@ function App() {
       });
       console.log(list)
       setThing(list)
-
+    
 
     }).catch((error) => {
 
       messageInBackground(error)
     });
+    }
   }
 
   const doSectionThing = (e) =>{
@@ -80,7 +83,7 @@ function App() {
     setVisibleQuery(query)
   }
 
-  const cops = ['CPM', 'Lambda']
+  const cops = ['CPM']
 
   const goToUrl = (url) => {
     chrome.tabs.query({ active: true, currentWindow: false }, function (tabs) {
@@ -90,10 +93,31 @@ function App() {
 
   const favoriteItem = (key, item) =>{
 
-        chrome.storage.sync.set({'favorites': {key: item}}, function() {
+    chrome.storage.sync.get(['favorites'], function(result) { 
+
+      let tmp = result['favorites']
+
+      tmp[key] = item
+      console.log('TMP')
+      console.log({tmp})
+
+      chrome.storage.sync.set({'favorites': tmp}, function() {
       console.log('Value is set to ' + key);
       console.log(item)
     });
+      
+      setFavorites(result['favorites'])
+    })
+
+
+
+
+      chrome.storage.sync.get(['favorites'], function(result) {
+
+    console.log('Favorites: ');
+    console.log({result})
+
+  });
 
   }
 
@@ -106,7 +130,7 @@ useEffect(()=>{
     console.log("before second chrome thing")
   chrome.storage.sync.get([key], function(result) {
       console.log("after second chrome thing")
-    console.log('Value currently is ' + result);
+    console.log('117 Value currently is ' + result);
     console.log({result})
     // setChosenCop(result[key])
     doThing(result[key])
@@ -118,7 +142,7 @@ useEffect(()=>{
 
   useEffect(() => {
 
-
+    console.log("13 0this is firing")
 
   }, [thing, visibleQuery])
 
@@ -135,7 +159,25 @@ useEffect(()=>{
     } else {
       setSectionDropdown(true)
     }
+
+    if (chosenCop == "favorites"){
+      setFavoritesOpen(true)
+
+chrome.storage.sync.get(['favorites'], function(result) { 
+setFavorites(result['favorites'])
+})
+
+      
+    } else {
+      setFavoritesOpen(false)
+    }
   }, [chosenCop])
+
+
+
+  useEffect(() => {
+console.log('favorites open?', favoritesOpen)
+  }, [favoritesOpen])
 
   // const toggleClass = (key) =>{
 
@@ -154,6 +196,7 @@ useEffect(()=>{
         <select onChange={(e) => doThing(e.target.value)} value={chosenCop} >
 
           <option value={""}>Select a COP</option>
+          <option value={"favorites"}>Favorites</option>
           {cops.map((x) => {
             return (
 
@@ -174,8 +217,9 @@ useEffect(()=>{
             </button>
           )
         })} */}
+{favoritesOpen ? "" : <>
+              { sectionDropdown ?
 
-              { sectionDropdown ? 
         <select onChange={(e) => setChosenSection(e.target.value)} value={chosenSection} >
 
           <option value={""}>Select a Topic</option>
@@ -193,8 +237,8 @@ useEffect(()=>{
         : 
         ""
       }
-
-
+</>
+}
       <p>---------------------------------------------------------------------------------</p>
 {/* 
         <div>
@@ -206,6 +250,39 @@ useEffect(()=>{
 
         <ul>
           {/* <li>First</li> */}
+{favoritesOpen ? 
+
+<>
+
+ 
+
+
+          { chrome.storage.sync.get(['favorites'], function(result) { 
+            return(
+           
+            Object.values(result['favorites']).map((item) => {
+            console.log({item})
+            console.log("INSIDE THE REACT")
+            return (
+              <li>
+              <div>
+                
+                <div id={item} className="query">{item['query']}</div>
+                <p>{item['key']}</p>
+                {visibleQuery == item ? <div><p>{item['query']}</p> <button onClick={() => setVisibleQuery(null)}>Close</button></div>: ""}
+                <a onClick={() => goToUrl(item['url'])}>{item}</a>
+                <button onClick={() => { showQuery(item) }}>Show Query</button>
+
+                <p>__________________________________________________________________________________________</p>
+              </div></li>)
+
+          }))}) }
+          </>
+
+ : <>
+
+
+
           {chosenSection ? Object.keys(thing[chosenSection]).map((item) => {
             return (
               // <li key={thing[item]['url']}>{thing[item]['url']}</li>
@@ -221,8 +298,8 @@ useEffect(()=>{
               </div>)
 
           }) : ""}
-          {/* <li>Last</li> */}
-
+          </>
+            }
         </ul>
 
 
