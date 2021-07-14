@@ -11,6 +11,8 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import firebase from 'firebase';
 
+import { Button, Divider, List, ListItem, ListItemText, Grid, GridItem } from '@material-ui/core';
+
 import { messageInBackground } from './background/index.js'
 
 function App() {
@@ -186,13 +188,17 @@ console.log('favorites open?', favoritesOpen)
 
 
   return (
-    <div className="App">
+    <div className="App" style={{width:"600px"}}>
+    <Grid container  >
+    <Grid item xs={12}>
       <header className="App-header">
         {/* <img src={logo} className="App-logo" alt="logo" /> */}
         <p style={thing ? { color: "red" } : { color: "blue" }}>
           {thing ? chosenCop : "Choose a COP"}.
         </p>
-
+      </header>
+      </Grid>
+      <Grid item xs={12}>
         <select onChange={(e) => doThing(e.target.value)} value={chosenCop} >
 
           <option value={""}>Select a COP</option>
@@ -208,6 +214,7 @@ console.log('favorites open?', favoritesOpen)
           })}
 
         </select>
+       
         {/* {cops.map((x) => {
           return (
 
@@ -239,7 +246,8 @@ console.log('favorites open?', favoritesOpen)
       }
 </>
 }
-      <p>---------------------------------------------------------------------------------</p>
+ </Grid>
+      <Divider />
 {/* 
         <div>
           <p>{visibleQuery == null ? "" : visibleQuery}</p>
@@ -248,19 +256,20 @@ console.log('favorites open?', favoritesOpen)
 
 
 
-        <ul>
+        <List>
           {/* <li>First</li> */}
 {favoritesOpen ? 
 
-<>
+/* <>
 
  
 
 
           { chrome.storage.sync.get(['favorites'], function(result) { 
             return(
-           
-            Object.values(result['favorites']).map((item) => {
+              <>
+                <p>Hey</p>
+            {Object.values(result['favorites']).map((item) => {
             console.log({item})
             console.log("INSIDE THE REACT")
             return (
@@ -276,31 +285,38 @@ console.log('favorites open?', favoritesOpen)
                 <p>__________________________________________________________________________________________</p>
               </div></li>)
 
-          }))}) }
+          })}
           </>
+          )}) }
+          </> */
+
+          <p>Hey</p>
 
  : <>
-
-
 
           {chosenSection ? Object.keys(thing[chosenSection]).map((item) => {
             return (
               // <li key={thing[item]['url']}>{thing[item]['url']}</li>
-              <div>
+              <ListItem>
+              <Grid container>
 {/*               
                 <div id={item} className="query">{thing[chosenSection][item]['query']}</div> */}
-
-                {visibleQuery == item ? <div><p>{thing[chosenSection][item]['query']}</p> <button onClick={() => setVisibleQuery(null)}>Close</button></div>: ""}
-                <a onClick={() => goToUrl(thing[chosenSection][item]['url'])}>{item}</a>
-                <button onClick={() => { showQuery(item) }}>Show Query</button>
-                <button onClick={() => { favoriteItem(item, thing[chosenSection][item]) }}>*Favorite*</button>
-                <p>__________________________________________________________________________________________</p>
-              </div>)
-
+              <Grid item xs={12} justifyContent="center"><ListItemText style={{color: "green", fontSize:"20px"}} justifyContent="center" primary={item.replace(/_/g, ' ').toUpperCase()} /></Grid>
+                {visibleQuery == item ? <Grid item xs={12}><div><ListItemText>{thing[chosenSection][item]['query']}</ListItemText> <Button variant="contained" color="primary" onClick={() => setVisibleQuery(null)}>Close</Button><Divider></Divider></div></Grid>: ""}
+                
+                <Grid item xs={4}><Button variant="contained" color="primary" onClick={() => goToUrl(thing[chosenSection][item]['url'])}>Query Builder</Button></Grid>
+                <Grid item xs={4}><Button variant="contained" color="primary" onClick={() => { showQuery(item) }}>Show Query</Button></Grid>
+                <Grid item xs={4}><Button variant="contained" color="primary" onClick={() => { favoriteItem(item, thing[chosenSection][item]) }}>*Favorite*</Button></Grid>
+               </Grid>
+              </ListItem>
+              
+           )
+ 
           }) : ""}
+          
           </>
             }
-        </ul>
+        </List>
 
 
 
@@ -312,7 +328,8 @@ console.log('favorites open?', favoritesOpen)
         >
           Lambda
         </button> */}
-      </header>
+    
+      </Grid>
     </div>
   );
 }
