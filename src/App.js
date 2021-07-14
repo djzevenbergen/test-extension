@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import firebase from 'firebase';
 
-import { Button, Divider, List, ListItem, ListItemText, Grid, GridItem } from '@material-ui/core';
+import { Button, Divider, List, ListItem, ListItemText, Grid, GridItem, Card, CardHeader, CardContent } from '@material-ui/core';
 
 import { messageInBackground } from './background/index.js'
 
@@ -189,7 +189,7 @@ console.log('favorites open?', favoritesOpen)
 
   return (
     <div className="App" style={{width:"600px"}}>
-    <Grid container  >
+    <Grid container >
     <Grid item xs={12}>
       <header className="App-header">
         {/* <img src={logo} className="App-logo" alt="logo" /> */}
@@ -198,7 +198,7 @@ console.log('favorites open?', favoritesOpen)
         </p>
       </header>
       </Grid>
-      <Grid item xs={12}>
+      <Grid className="content"  item xs={12}>
         <select onChange={(e) => doThing(e.target.value)} value={chosenCop} >
 
           <option value={""}>Select a COP</option>
@@ -256,7 +256,7 @@ console.log('favorites open?', favoritesOpen)
 
 
 
-        <List>
+        <List className='content' style={{alignItems:"center"}}>
           {/* <li>First</li> */}
 {favoritesOpen ? 
 
@@ -298,16 +298,26 @@ console.log('favorites open?', favoritesOpen)
             return (
               // <li key={thing[item]['url']}>{thing[item]['url']}</li>
               <ListItem>
-              <Grid container>
-{/*               
-                <div id={item} className="query">{thing[chosenSection][item]['query']}</div> */}
-              <Grid item xs={12} justifyContent="center"><ListItemText style={{color: "green", fontSize:"20px"}} justifyContent="center" primary={item.replace(/_/g, ' ').toUpperCase()} /></Grid>
+
+               <Card style={{width: '600px', alignItems:"center"}}>
+                             <Grid container>
+
+           
+               <CardHeader >
+              <Grid item xs={12} justifyContent="center"><ListItemText style={{color: "green", fontSize:"20px"}} justifyContent="center" primary={item.replace(/_/g, ' ').toUpperCase()} /></Grid></CardHeader>
                 {visibleQuery == item ? <Grid item xs={12}><div><ListItemText>{thing[chosenSection][item]['query']}</ListItemText> <Button variant="contained" color="primary" onClick={() => setVisibleQuery(null)}>Close</Button><Divider></Divider></div></Grid>: ""}
                 
+                <CardContent>
+                     <Grid xs={12}>
                 <Grid item xs={4}><Button variant="contained" color="primary" onClick={() => goToUrl(thing[chosenSection][item]['url'])}>Query Builder</Button></Grid>
                 <Grid item xs={4}><Button variant="contained" color="primary" onClick={() => { showQuery(item) }}>Show Query</Button></Grid>
                 <Grid item xs={4}><Button variant="contained" color="primary" onClick={() => { favoriteItem(item, thing[chosenSection][item]) }}>*Favorite*</Button></Grid>
+                </Grid>
+                </CardContent>
+                         
                </Grid>
+               </Card> 
+
               </ListItem>
               
            )
