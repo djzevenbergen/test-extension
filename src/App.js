@@ -27,8 +27,15 @@ function App() {
   const [favoritesOpen ,setFavoritesOpen] = useState(false)
   const [favorites, setFavorites] = useState({})
 
+//     chrome.storage.sync.get(['favorites'], function(result) { 
+// setFavorites(result['favorites'])
+// })
+
   const doThing = async (cop) => {
     setChosenCop(cop)
+
+
+
 
     chrome.storage.sync.set({'cop': cop}, function() {
       console.log('Value is set to ' + cop);
@@ -95,8 +102,15 @@ function App() {
 
   const favoriteItem = (key, item) =>{
 
-    chrome.storage.sync.get(['favorites'], function(result) { 
+      if (favorites === undefined){
+        setFavorites({})
 
+      }
+
+    chrome.storage.sync.get(['favorites'], function(result) { 
+      if (result['favorites'] === undefined){
+        result['favorites'] = {}
+      }
       let tmp = result['favorites']
 
       tmp[key] = item
@@ -109,6 +123,9 @@ function App() {
     });
       
       setFavorites(result['favorites'])
+
+      console.log("127 - favorites: ")
+      console.log(favorites)
     })
 
 
@@ -125,6 +142,15 @@ function App() {
 
 
 useEffect(()=>{
+if (favorites === undefined){
+  setFavorites({})
+}
+chrome.storage.sync.get(['favorites'], function(result) { 
+  if (result['favorites']){
+setFavorites(result['favorites'])
+  }
+
+})
 
   const key = 'cop'
   console.log("before first chrome thing")
@@ -138,6 +164,15 @@ useEffect(()=>{
     doThing(result[key])
     console.log(chosenCop + "is the chosen cOP")
   });
+
+//   chrome.storage.sync.get(['favorites'], function(result) { 
+// setFavorites(result['favorites'])
+// })
+
+
+// chrome.storage.sync.get(['favorites'], function(result) { 
+// setFavorites(result['favorites'])
+// })
 
 
 }, [])
@@ -165,9 +200,6 @@ useEffect(()=>{
     if (chosenCop == "favorites"){
       setFavoritesOpen(true)
 
-chrome.storage.sync.get(['favorites'], function(result) { 
-setFavorites(result['favorites'])
-})
 
       
     } else {
@@ -178,7 +210,19 @@ setFavorites(result['favorites'])
 
 
   useEffect(() => {
-console.log('favorites open?', favoritesOpen)
+    console.log('favorites open?', favoritesOpen)
+    console.log('favirites type', typeof favorites)
+    console.log('THE HOOK FAVES:')
+    console.log({favorites})
+
+    chrome.storage.sync.get(['favorites'], function(result) { 
+    setFavorites(result['favorites'])
+    })
+
+    console.log('favorites open?', favoritesOpen)
+    console.log('THE HOOK FAVES:')
+    console.log({favorites})
+
   }, [favoritesOpen])
 
   // const toggleClass = (key) =>{
@@ -224,6 +268,10 @@ console.log('favorites open?', favoritesOpen)
             </button>
           )
         })} */}
+
+
+
+        {/* this should be a component!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
 {favoritesOpen ? "" : <>
               { sectionDropdown ?
 
@@ -288,9 +336,86 @@ console.log('favorites open?', favoritesOpen)
           })}
           </>
           )}) }
-          </> */
+          </>  */
 
-          <p>Hey</p>
+
+          <>
+
+{/* 
+             {Object.keys(favorites)?.map((item) => {
+            console.log({item})
+            console.log("INSIDE THE REACT")
+            return (
+              <li>
+              <div>
+                
+                <div id={item} className="query">{favorites[item]['query']}</div>
+                <p>{item['key']}</p>
+                {visibleQuery == item ? <div><p>{favorites[item]['query']}</p> <button onClick={() => setVisibleQuery(null)}>Close</button></div>: ""}
+                <a onClick={() => goToUrl(favorites[item]['url'])}>{favorites[item]}</a>
+                <button onClick={() => { showQuery(item) }}>Show Query</button>
+
+                <p>__________________________________________________________________________________________</p>
+              </div></li>)
+
+          })} */}
+
+          {Object.keys(favorites).map((item) =>{
+            
+            console.log(item)
+
+            return(
+              /* <><p>{item}</p></> */
+
+                      /*      <li>
+              <div>
+                
+                <div id={item} className="query">{favorites[item]['query']}</div>
+                <p>{item['key']}</p>
+                {visibleQuery == item ? <div><p>{favorites[item]['query']}</p> <button onClick={() => setVisibleQuery(null)}>Close</button></div>: ""}
+                <a onClick={() => goToUrl(favorites[item]['url'])}>{item}</a>
+                <button onClick={() => { showQuery(item) }}>Show Query</button>
+
+                <p>__________________________________________________________________________________________</p>
+              </div></li>*/
+
+
+///////////////////////******************************************************************* THIS SHOULD BE A COMPONENT */
+              <ListItem>
+
+               <Card style={{width: '600px', alignItems:"center"}}>
+                             <Grid container>
+
+           
+               <CardHeader >
+               
+              {/* <Grid item xs={12} justifyContent="center"><ListItemText style={{color: "green", fontSize:"20px"}} justifyContent="center" primary={item.replace(/_/g, ' ').toUpperCase()} /></Grid> */}
+              </CardHeader>
+                {visibleQuery == item ? <Grid item xs={12}><div><ListItemText>{favorites[item]['query']}</ListItemText> <Button variant="contained" color="primary" onClick={() => setVisibleQuery(null)}>Close</Button><Divider></Divider></div></Grid>: ""}
+                
+                <CardContent>
+                     <Grid item xs={12}>
+                
+                
+              <Grid item xs={4}><Button variant="contained" color="primary" onClick={() => { showQuery(item) }}>Show Query {item}</Button></Grid>
+              <Grid item xs={4}><Button variant="contained" color="primary" onClick={() => goToUrl(favorites[item]['url'])}>Query Builder</Button></Grid>
+                {/* <Grid item xs={4}><Button variant="contained" color="primary" onClick={() => { favoriteItem(item, favorites[item]) }}>*Favorite*</Button></Grid> */}
+                </Grid>
+                </CardContent>
+                         
+               </Grid>
+               </Card> 
+
+              </ListItem>
+
+
+            )
+            
+            })}
+
+          </>
+
+
 
  : <>
 
@@ -304,13 +429,17 @@ console.log('favorites open?', favoritesOpen)
 
            
                <CardHeader >
-              <Grid item xs={12} justifyContent="center"><ListItemText style={{color: "green", fontSize:"20px"}} justifyContent="center" primary={item.replace(/_/g, ' ').toUpperCase()} /></Grid></CardHeader>
+               
+              {/* <Grid item xs={12} justifyContent="center"><ListItemText style={{color: "green", fontSize:"20px"}} justifyContent="center" primary={item.replace(/_/g, ' ').toUpperCase()} /></Grid> */}
+              </CardHeader>
                 {visibleQuery == item ? <Grid item xs={12}><div><ListItemText>{thing[chosenSection][item]['query']}</ListItemText> <Button variant="contained" color="primary" onClick={() => setVisibleQuery(null)}>Close</Button><Divider></Divider></div></Grid>: ""}
                 
                 <CardContent>
-                     <Grid xs={12}>
-                <Grid item xs={4}><Button variant="contained" color="primary" onClick={() => goToUrl(thing[chosenSection][item]['url'])}>Query Builder</Button></Grid>
-                <Grid item xs={4}><Button variant="contained" color="primary" onClick={() => { showQuery(item) }}>Show Query</Button></Grid>
+                     <Grid item xs={12}>
+                
+                
+              <Grid item xs={4}><Button variant="contained" color="primary" onClick={() => { showQuery(item) }}>Show Query {item}</Button></Grid>
+              <Grid item xs={4}><Button variant="contained" color="primary" onClick={() => goToUrl(thing[chosenSection][item]['url'])}>Query Builder</Button></Grid>
                 <Grid item xs={4}><Button variant="contained" color="primary" onClick={() => { favoriteItem(item, thing[chosenSection][item]) }}>*Favorite*</Button></Grid>
                 </Grid>
                 </CardContent>
