@@ -141,6 +141,8 @@ function App() {
   }
 
 
+
+
   useEffect(() => {
     if (favorites === undefined) {
       setFavorites({})
@@ -182,6 +184,31 @@ function App() {
     console.log("13 0this is firing")
 
   }, [thing, visibleQuery])
+
+  useEffect(() => {
+
+    console.log("favorites load hook this is firing")
+
+  }, [favorites])
+
+
+  const removeFavorite = (key) => {
+    let tmp = favorites
+
+    delete tmp[key]
+
+    console.log("new faves")
+    console.log({ tmp })
+
+    chrome.storage.sync.set({ 'favorites': tmp }, function () {
+      console.log('Value is set to ' + key);
+      setFavorites(tmp)
+
+    });
+
+    setFavoritesOpen(true)
+
+  }
 
   useEffect(() => {
 
@@ -396,6 +423,7 @@ function App() {
                         <CardContent>
                           <Grid item xs={12}>
 
+                            <Grid item xs={4}><Button variant="contained" color="primary" onClick={() => { removeFavorite(item) }}>Remove from favorites</Button></Grid>
 
                             <Grid item xs={4}><Button variant="contained" color="primary" onClick={() => { showQuery(item) }}>Show Query {item}</Button></Grid>
                             <Grid item xs={4}><Button variant="contained" color="primary" onClick={() => goToUrl(favorites[item]['url'])}>Query Builder</Button></Grid>
