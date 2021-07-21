@@ -25,7 +25,8 @@ function App() {
   const [chosenSection, setChosenSection] = useState()
   const [sectionDropdown, setSectionDropdown] = useState(false);
   const [favoritesOpen, setFavoritesOpen] = useState(false)
-  const [favorites, setFavorites] = useState({})
+  const [favorites, setFavorites] = useState({});
+  const [switcher, setSwitcher] = useState(true)
 
   //     chrome.storage.sync.get(['favorites'], function(result) { 
   // setFavorites(result['favorites'])
@@ -189,7 +190,7 @@ function App() {
 
     console.log("favorites load hook this is firing")
 
-  }, [favorites])
+  }, [switcher])
 
 
   const removeFavorite = (key) => {
@@ -202,11 +203,15 @@ function App() {
 
     chrome.storage.sync.set({ 'favorites': tmp }, function () {
       console.log('Value is set to ' + key);
-      setFavorites(tmp)
+
 
     });
 
+    setFavorites(tmp)
     setFavoritesOpen(true)
+    setSwitcher(!switcher)
+    console.log("210 FAVORITES ")
+    console.log({ favorites })
 
   }
 
@@ -423,7 +428,7 @@ function App() {
                         <CardContent>
                           <Grid item xs={12}>
 
-                            <Grid item xs={4}><Button variant="contained" color="primary" onClick={() => { removeFavorite(item) }}>Remove from favorites</Button></Grid>
+                            <Grid item xs={4}><Button variant="contained" color="primary" onClick={() => removeFavorite(item)}>Remove from favorites</Button></Grid>
 
                             <Grid item xs={4}><Button variant="contained" color="primary" onClick={() => { showQuery(item) }}>Show Query {item}</Button></Grid>
                             <Grid item xs={4}><Button variant="contained" color="primary" onClick={() => goToUrl(favorites[item]['url'])}>Query Builder</Button></Grid>
