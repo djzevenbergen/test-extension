@@ -2,9 +2,11 @@
 
 //todo
 
-// add the section to local.sync for persistent previous position
-// add favorites to local.sync ass object - https://stackoverflow.com/questions/15717334/chrome-sync-storage-to-store-and-update-array
+// add the section to local.sync for persistent previous position (still needs to remember section)
 // pull from github and parse on client
+// test favorites functionality
+// get url creation code from scotto
+
 
 import logo from './logo.svg';
 import { useEffect, useState } from 'react';
@@ -237,11 +239,17 @@ setFavorites(result['favorites'])
     <Grid item xs={12}>
       <header className="App-header">
         {/* <img src={logo} className="App-logo" alt="logo" /> */}
+
+
+                {/* this should be a component!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
+
         <p style={thing ? { color: "red" } : { color: "blue" }}>
           {thing ? chosenCop : "Choose a COP"}.
         </p>
       </header>
       </Grid>
+
+
       <Grid className="content"  item xs={12}>
         <select onChange={(e) => doThing(e.target.value)} value={chosenCop} >
 
