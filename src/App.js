@@ -416,27 +416,29 @@ function App() {
                   <ListItem>
 
                     <Card style={{ width: '600px', alignItems: "center" }}>
+
+
+
+                      <CardHeader title={item}>
+                        {/* {item} */}
+                        {/* <Grid item xs={12} justifyContent="center"><ListItemText style={{color: "green", fontSize:"20px"}} justifyContent="center" primary={item.replace(/_/g, ' ').toUpperCase()} /></Grid> */}
+                      </CardHeader>
+                      {visibleQuery == item ? <Grid item xs={12}><div><ListItemText>{favorites[item]['query']}</ListItemText> <Button variant="contained" color="primary" onClick={() => setVisibleQuery(null)}>Close</Button><Divider></Divider></div></Grid> : ""}
+
+                      {/* <CardContent> */}
                       <Grid container>
 
 
-                        <CardHeader >
+                        {/* <Grid item xs={12}>{item}</Grid> */}
 
-                          {/* <Grid item xs={12} justifyContent="center"><ListItemText style={{color: "green", fontSize:"20px"}} justifyContent="center" primary={item.replace(/_/g, ' ').toUpperCase()} /></Grid> */}
-                        </CardHeader>
-                        {visibleQuery == item ? <Grid item xs={12}><div><ListItemText>{favorites[item]['query']}</ListItemText> <Button variant="contained" color="primary" onClick={() => setVisibleQuery(null)}>Close</Button><Divider></Divider></div></Grid> : ""}
-
-                        <CardContent>
-                          <Grid item xs={12}>
-
-                            <Grid item xs={4}><Button variant="contained" color="primary" onClick={() => removeFavorite(item)}>Remove from favorites</Button></Grid>
-
-                            <Grid item xs={4}><Button variant="contained" color="primary" onClick={() => { showQuery(item) }}>Show Query {item}</Button></Grid>
-                            <Grid item xs={4}><Button variant="contained" color="primary" onClick={() => goToUrl(favorites[item]['url'])}>Query Builder</Button></Grid>
-                            {/* <Grid item xs={4}><Button variant="contained" color="primary" onClick={() => { favoriteItem(item, favorites[item]) }}>*Favorite*</Button></Grid> */}
-                          </Grid>
-                        </CardContent>
-
+                        <Grid item xs={12}><Button variant="contained" color="primary" onClick={() => { showQuery(item) }}>Show Query</Button></Grid>
+                        <Grid item xs={6}><Button variant="contained" color="primary" onClick={() => goToUrl(favorites[item]['url'])}>Query Builder</Button></Grid>
+                        <Grid item xs={6}><Button variant="contained" color="primary" onClick={() => removeFavorite(item)}>Remove from favorites</Button></Grid>
+                        {/* <Grid item xs={4}><Button variant="contained" color="primary" onClick={() => { favoriteItem(item, favorites[item]) }}>*Favorite*</Button></Grid> */}
                       </Grid>
+                      {/* </CardContent> */}
+
+
                     </Card>
 
                   </ListItem>
