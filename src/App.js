@@ -7,7 +7,7 @@
 // test favorites functionality
 // get url creation code from scotto
 
-
+import Listicle from './downloadFile';
 import logo from './logo.svg';
 import { useEffect, useState } from 'react';
 import './App.css';
@@ -30,6 +30,12 @@ function App() {
   const [favorites, setFavorites] = useState({});
   const [switcher, setSwitcher] = useState(true)
 
+  const [cosa, setCosa] = useState()
+
+
+
+
+
   //     chrome.storage.sync.get(['favorites'], function(result) { 
   // setFavorites(result['favorites'])
   // })
@@ -38,6 +44,11 @@ function App() {
     setChosenCop(cop)
 
 
+    let cosa = await Listicle();
+
+
+    console.log("APP COMPONENT DATA")
+    console.log(cosa)
 
 
     chrome.storage.sync.set({ 'cop': cop }, function () {
@@ -98,8 +109,13 @@ function App() {
   const cops = ['CPM']
 
   const goToUrl = (url) => {
-    chrome.tabs.query({ active: true, currentWindow: false }, function (tabs) {
-      chrome.tabs.update(tabs[0], { url: url });
+
+    console.log(url)
+
+    //make this so it opens a new tab
+
+    chrome.tabs.query({ active: true, currentWindow: false }, function (t) {
+      chrome.tabs.update({ url: url });
     });
   }
 
@@ -266,31 +282,6 @@ function App() {
 
 
   return (
-<<<<<<< HEAD
-    <div className="App" style={{width:"600px"}}>
-    <Grid container >
-    <Grid item xs={12}>
-      <header className="App-header">
-        {/* <img src={logo} className="App-logo" alt="logo" /> */}
-
-
-                {/* this should be a component!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
-
-        <p style={thing ? { color: "red" } : { color: "blue" }}>
-          {thing ? chosenCop : "Choose a COP"}.
-        </p>
-      </header>
-      </Grid>
-
-
-      <Grid className="content"  item xs={12}>
-        <select onChange={(e) => doThing(e.target.value)} value={chosenCop} >
-
-          <option value={""}>Select a COP</option>
-          <option value={"favorites"}>Favorites</option>
-          {cops.map((x) => {
-            return (
-=======
     <div className="App" style={{ width: "600px" }}>
       <Grid container >
         <Grid item xs={12}>
@@ -315,7 +306,6 @@ function App() {
                 </option>
               )
             })}
->>>>>>> 45a3efefff9bf23b9a73160bac63f4cc73c769ea
 
           </select>
 

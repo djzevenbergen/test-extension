@@ -12,6 +12,7 @@ import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
 import { createFirestoreInstance } from 'redux-firestore';
 import firebase from "./firebase";
 import 'firebase/auth';
+import Listicle from './downloadFile';
 
 const store = createStore(rootReducer);
 
@@ -25,6 +26,10 @@ const rrfProps = {
   createFirestoreInstance
 }
 
+// const file = Listicle();
+
+// console.log("INDEX PAGW")
+// console.log({file})
 
 ReactDOM.render(
   <React.StrictMode>
