@@ -17,6 +17,13 @@ export async function messageInBackground(input) {
 
 
 
+  var partsArray = thing.split(/\r?\n/);
+  // let partsArray = partsArray[0]
+
+  console.log("####################### post split")
+  console.log(partsArray)
+  
+
 
   const urls = {
     cpm: 'https://source.datanerd.us/tech-support/nr-cpm-support-cop/blob/main/useful-commands/nrql.sql',
