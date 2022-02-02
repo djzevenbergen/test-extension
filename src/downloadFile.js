@@ -22,6 +22,7 @@ const Listicle = async () => {
         cosa = response.text()
 
         console.log({cosa})
+
         return cosa
     })
         
@@ -30,8 +31,8 @@ const Listicle = async () => {
 
         console.log('line 31 of downloadFile')
         console.log({data})
-
-        cosa = data
+        // var partsArray = thing
+        cosa = data.split(/\r?\n/);
         return data
     })
         

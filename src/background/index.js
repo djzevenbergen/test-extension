@@ -17,11 +17,17 @@ export async function messageInBackground(input) {
 
 
 
-  var partsArray = thing.split(/\r?\n/);
+
   // let partsArray = partsArray[0]
 
   console.log("####################### post split")
-  console.log(partsArray)
+  console.log(thing)
+
+  let newMainObject = {}
+
+  thing.forEach((x)=>{
+    console.log(x)
+  })
   
 
 
